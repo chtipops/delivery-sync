@@ -52,35 +52,37 @@ export async function syncDeliverySettingsToMetafields(admin: any) {
         namespace: "custom",
         key: "cp_delivery_enabled",
         type: "boolean",
-        value: settings.deliveryDatesEnabled ? "true" : "false"
+        value: settings.deliveryDatesEnabled ? "true" : "false",
       },
       {
         ownerId: shopId,
         namespace: "custom",
         key: "cp_processing_days",
         type: "number_integer",
-        value: String(processingDays)
+        value: String(processingDays),
       },
       {
         ownerId: shopId,
         namespace: "custom",
         key: "cp_ship_min_days",
         type: "number_integer",
-        value: "1"
+        value: "1",
       },
       {
         ownerId: shopId,
         namespace: "custom",
         key: "cp_ship_max_days",
         type: "number_integer",
-        value: "3"
-      }
-    ]
+        value: "3",
+      },
+    ],
   };
 
   const mutationResponse = await admin.graphql(mutation, { variables });
-console.log("METAFIELD SENT:", variables);
   const mutationJson = await mutationResponse.json();
 
-  console.log("METAFIELD RESULT:", JSON.stringify(mutationJson, null, 2));
+  const userErrors = mutationJson?.data?.metafieldsSet?.userErrors || [];
+  if (userErrors.length > 0) {
+    throw new Error(`Metafields sync failed: ${userErrors.map((e: any) => e.message).join(", ")}`);
   }
+}
