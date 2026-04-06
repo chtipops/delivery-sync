@@ -79,6 +79,7 @@ export async function syncDeliverySettingsToMetafields(admin: any) {
   };
 
   const mutationResponse = await admin.graphql(mutation, { variables });
+console.log("METAFIELD SENT:", variables);
   const mutationJson = await mutationResponse.json();
 
   console.log("METAFIELD RESULT:", JSON.stringify(mutationJson, null, 2));
